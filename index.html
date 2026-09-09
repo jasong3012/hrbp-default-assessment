@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The HRBP Default | Powerhouse Coaching</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#58879d;
+    --dark-teal:#27414d;
+    --light-blue:#dde6f1;
+    --muted-blue:#7c8fa3;
+    --sage:#7da37c;
+    --off-white:#f5f8fa;
+    --border:#bdc7d1;
+    --ink:#1c2b31;
+    --white:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--off-white);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .stage{
+    max-width:640px;
+    margin:0 auto;
+    padding:56px 24px 80px;
+    min-height:100vh;
+  }
+  .mark{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:48px;
+  }
+  .mark .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--sage);
+  }
+  .mark span{
+    font-size:13px;
+    letter-spacing:0.03em;
+    color:var(--muted-blue);
+    font-weight:500;
+  }
+
+  /* ---- INTRO ---- */
+  .intro h1{
+    font-family:'Source Serif 4',serif;
+    font-size:clamp(30px,5vw,42px);
+    line-height:1.15;
+    font-weight:600;
+    color:var(--dark-teal);
+    margin:0 0 20px;
+  }
+  .intro p{
+    font-size:17px;
+    line-height:1.65;
+    color:var(--ink);
+    margin:0 0 16px;
+    max-width:54ch;
+  }
+  .intro .lede{
+    font-size:18px;
+    color:var(--dark-teal);
+    font-weight:500;
+  }
+  .btn{
+    appearance:none;
+    border:none;
+    background:var(--primary);
+    color:var(--white);
+    font-family:'Inter',sans-serif;
+    font-size:15.5px;
+    font-weight:600;
+    padding:14px 28px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:background 0.15s ease;
+  }
+  .btn:hover{background:var(--dark-teal);}
+  .btn:focus-visible{outline:2px solid var(--dark-teal);outline-offset:3px;}
+  .btn-ghost{
+    background:transparent;
+    color:var(--primary);
+    border:1px solid var(--border);
+  }
+  .btn-ghost:hover{background:var(--light-blue);color:var(--dark-teal);}
+
+  /* ---- QUIZ ---- */
+  .progress-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:28px;
+  }
+  .progress-label{
+    font-size:13px;
+    color:var(--muted-blue);
+    font-weight:500;
+  }
+  .progress-track{
+    height:3px;
+    background:var(--border);
+    border-radius:2px;
+    overflow:hidden;
+    margin-top:10px;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--sage);
+    transition:width 0.35s ease;
+  }
+  .scenario{
+    font-family:'Source Serif 4',serif;
+    font-size:clamp(21px,3.4vw,25px);
+    line-height:1.45;
+    color:var(--dark-teal);
+    font-weight:500;
+    margin:8px 0 30px;
+  }
+  .scenario-prompt{
+    font-size:15px;
+    font-weight:600;
+    color:var(--muted-blue);
+    margin:0 0 22px;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .option{
+    text-align:left;
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:16px 18px;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    line-height:1.55;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  }
+  .option:hover{
+    border-color:var(--primary);
+    background:var(--light-blue);
+  }
+  .option:active{transform:scale(0.995);}
+  .option:focus-visible{outline:2px solid var(--dark-teal);outline-offset:2px;}
+  .option .quote-mark{color:var(--muted-blue);}
+
+  /* ---- RESULT ---- */
+  .result-eyebrow{
+    font-size:13px;
+    color:var(--muted-blue);
+    font-weight:500;
+    margin-bottom:10px;
+  }
+  .result-name{
+    font-family:'Source Serif 4',serif;
+    font-size:clamp(34px,6vw,50px);
+    color:var(--dark-teal);
+    font-weight:600;
+    margin:0 0 6px;
+    line-height:1.1;
+  }
+  .result-tagline{
+    font-size:18px;
+    color:var(--primary);
+    font-weight:500;
+    font-style:italic;
+    font-family:'Source Serif 4',serif;
+    margin:0 0 32px;
+  }
+  .result-section{
+    margin-bottom:26px;
+  }
+  .result-section h3{
+    font-size:13px;
+    text-transform:none;
+    letter-spacing:0.02em;
+    color:var(--sage);
+    font-weight:700;
+    margin:0 0 8px;
+  }
+  .result-section.shadow h3{color:#b5754a;}
+  .result-section p{
+    font-size:16px;
+    line-height:1.65;
+    color:var(--ink);
+    margin:0;
+  }
+  .divider{
+    height:1px;
+    background:var(--border);
+    margin:32px 0;
+  }
+  .not-fixed{
+    background:var(--light-blue);
+    border-radius:8px;
+    padding:22px 24px;
+    margin-bottom:32px;
+  }
+  .not-fixed h3{
+    font-size:13px;
+    color:var(--dark-teal);
+    font-weight:700;
+    margin:0 0 10px;
+    letter-spacing:0.02em;
+  }
+  .not-fixed p{
+    font-size:15px;
+    line-height:1.65;
+    color:var(--ink);
+    margin:0;
+  }
+  .breakdown{
+    margin-bottom:32px;
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:20px 22px 6px;
+  }
+  .breakdown-row{
+    display:grid;
+    grid-template-columns:90px 1fr 46px;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+    font-size:14px;
+  }
+  .breakdown-row .label{
+    color:var(--dark-teal);
+    font-weight:600;
+  }
+  .breakdown-row .count{
+    color:var(--muted-blue);
+    text-align:right;
+  }
+  .secondary-note{
+    font-size:13.5px;
+    color:var(--muted-blue);
+    margin:14px 0 6px;
+    padding-top:14px;
+    border-top:1px solid var(--border);
+  }
+  .secondary-note strong{
+    color:var(--dark-teal);
+  }
+  .bar-track{
+    background:var(--light-blue);
+    border-radius:3px;
+    height:8px;
+    overflow:hidden;
+  }
+  .bar-fill{
+    height:100%;
+    background:var(--primary);
+    border-radius:3px;
+    transition:width 0.5s ease;
+  }
+  .bar-fill.dominant{background:var(--dark-teal);}
+  .actions{
+    display:flex;
+    gap:12px;
+    margin-top:8px;
+    flex-wrap:wrap;
+  }
+  .hidden{display:none;}
+  @media (max-width:480px){
+    .breakdown-row{grid-template-columns:76px 1fr 40px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <div class="mark"><div class="dot"></div><span>POWERHOUSE COACHING — HRBP DEFAULT</span></div>
+
+  <!-- INTRO SCREEN -->
+  <div id="intro" class="intro">
+    <h1>Your Coaching Has a Pattern.</h1>
+    <p>Every HRBP has a default stance. It's the place they turn to when the client's readiness is either ahead of them, or behind them. Yours is running right now, whether you've named it or not.</p>
+    <p>Nine scenarios. Five minutes. One pattern you'll recognize the second you see it.</p>
+    <button class="btn" onclick="startQuiz()">Start the assessment</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quiz" class="hidden">
+    <div class="progress-row">
+      <div>
+        <div class="progress-label" id="progressLabel">Scenario 1 of 9</div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:11%"></div></div>
+      </div>
+    </div>
+    <div class="scenario" id="scenarioText"></div>
+    <div class="scenario-prompt" id="scenarioPrompt"></div>
+    <div class="options" id="optionsList"></div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result" class="hidden">
+    <div class="result-eyebrow">YOUR HRBP DEFAULT</div>
+    <div class="result-name" id="resultName"></div>
+    <div class="result-tagline" id="resultTagline"></div>
+
+    <div class="breakdown">
+      <h3 style="font-size:13px;color:var(--muted-blue);font-weight:700;margin:0 0 12px;">YOUR PATTERN DISTRIBUTION</h3>
+      <div id="breakdownRows"></div>
+      <p class="secondary-note" id="secondaryNote"></p>
+    </div>
+
+    <div class="result-section">
+      <h3>YOUR GIFT (WHEN IT'S A CHOICE)</h3>
+      <p id="resultGift"></p>
+    </div>
+    <div class="result-section shadow">
+      <h3>YOUR SHADOW (WHEN IT'S YOUR DEFAULT)</h3>
+      <p id="resultShadow"></p>
+    </div>
+    <div class="result-section">
+      <h3>THE STORY YOU TELL YOURSELF</h3>
+      <p id="resultStory"></p>
+    </div>
+    <div class="result-section">
+      <h3>HOW YOU SET THE COACHING AGREEMENT</h3>
+      <p id="resultAgreement"></p>
+    </div>
+    <div class="result-section">
+      <h3>HOW YOU TYPICALLY ASK QUESTIONS</h3>
+      <p id="resultQPattern"></p>
+    </div>
+    <div class="result-section">
+      <h3>YOUR VERBAL SIGNATURE</h3>
+      <p id="resultVerbal"></p>
+    </div>
+    <div class="result-section">
+      <h3>WHAT AN OBSERVER WOULD SEE</h3>
+      <p id="resultObserver"></p>
+    </div>
+    <div class="result-section">
+      <h3>WHAT YOUR RAS FOCUSES ON</h3>
+      <p id="resultRas"></p>
+    </div>
+    <div class="result-section">
+      <h3>HOW YOU DISCERN AND PERCEIVE</h3>
+      <p id="resultDiscernment"></p>
+    </div>
+    <div class="result-section">
+      <h3>WHAT TRIGGERS YOUR PATTERN</h3>
+      <p id="resultTriggers"></p>
+    </div>
+    <div class="result-section">
+      <h3>YOUR GROWTH STRETCH</h3>
+      <p id="resultGrowth"></p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="not-fixed">
+      <h3>ARCHETYPES ARE NOT FIXED</h3>
+      <p>Your HRBP default is a pattern, not a fixed identity. Patterns shift with awareness and practice. Fixer, Teacher, Rescuer, and Advisor each represent a genuine capability running without a pause built in. Coach represents the pause itself, present and trusted, but Coach has its own shadow too: restraint that overstays its welcome. None of the five is the finish line. Each is a gift that can run without calibration. Where you scored today reflects which pattern runs first under pressure right now. Not where it will run once you've practiced catching it.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="actions">
+    </div>
+  </div>
+
+</div>
+
+<script>
+const scenarios = [
+  {
+    text: "Before you started, you and the VP agreed on the principles for how the leadership programme participant list would be compiled, criteria you'd both sign off on before any names went forward. You followed those principles exactly and sent the list. The VP comes back asking why two names aren't on it, names that don't meet what you agreed on.",
+    prompt: "How would you respond to the VP?",
+    options: [
+      { t: "You go back and find a way to make the case for including the two names anyway.", a: "fixer", q: "closed" },
+      { t: "You walk the VP back through the criteria you both agreed on, and how the list was built from it.", a: "teacher", q: "closed" },
+      { t: "You add the two names, rather than have an awkward conversation about it.", a: "rescuer", q: "closed" },
+      { t: "You tell the VP the two names don't fit what you agreed on, and should stay off.", a: "advisor", q: "closed" },
+      { t: "You ask the VP what makes these two names important to include, and how that matches the selection principles you'd both agreed on before.", a: "coach", q: "open" }
+    ]
+  },
+  {
+    text: "A senior leader tells you, \"I think I need to let someone go. They're just not performing.\"",
+    prompt: "How would you respond to them?",
+    options: [
+      { t: "You tell them you'll pull the last two review cycles together so it's ready to move forward.", a: "fixer", q: "closed" },
+      { t: "You ask if it would help to walk through what a fair improvement process usually looks like first.", a: "teacher", q: "closed" },
+      { t: "You offer to sit in on the first conversation with them, since this sounds like it's been building.", a: "rescuer", q: "closed" },
+      { t: "You tell them, based on what they've described, it sounds like time to move to a formal process now.", a: "advisor", q: "closed" },
+      { t: "You ask what \"not performing\" actually means here. What is it about their performance that falls short of expectations, and would a leader from another team, looking at the same history, agree with that assessment?", a: "coach", q: "open" }
+    ]
+  },
+  {
+    text: "You pass along some feedback about a lead, given by their own team. The lead's first response is, \"I've been doing this for years, it works, and I don't need to change.\"",
+    prompt: "How would you respond to the lead?",
+    options: [
+      { t: "You offer to summarize the feedback into a few clear takeaways for them to work from.", a: "fixer", q: "closed" },
+      { t: "You ask if it would help to talk through why feedback like this can be hard to hear at a senior level.", a: "teacher", q: "closed" },
+      { t: "You offer to have a word with the team yourself, so the lead doesn't have to deal with it directly.", a: "rescuer", q: "closed" },
+      { t: "You tell them exactly what you'd say back to the team if you were in their shoes.", a: "advisor", q: "closed" },
+      { t: "You ask what it would mean about them if this feedback turned out to be right.", a: "coach", q: "open" }
+    ]
+  },
+  {
+    text: "A VP says, \"I'm thinking about restructuring my team, but I don't know where to start.\"",
+    prompt: "How would you respond to the VP?",
+    options: [
+      { t: "You offer to pull together a draft structure based on what's worked for other teams.", a: "fixer", q: "closed" },
+      { t: "You walk them through the two or three ways teams like theirs are usually organized.", a: "teacher", q: "closed" },
+      { t: "You tell them this sounds like a lot to carry alone, and offer to build the first draft together.", a: "rescuer", q: "closed" },
+      { t: "You tell them, given their headcount, you'd split it by function rather than by region.", a: "advisor", q: "closed" },
+      { t: "You ask what problem they're actually trying to solve that a restructure would fix.", a: "coach", q: "open" }
+    ]
+  },
+  {
+    text: "A leader says, \"I know I need to give my report tough feedback. I just don't know how to do it without hurting their feelings.\"",
+    prompt: "How would you respond to them?",
+    options: [
+      { t: "You offer to run a few prompts through ChatGPT to draft scripts, and set the meeting on the calendar to practice.", a: "fixer", q: "closed" },
+      { t: "You ask if it would help to walk through a simple structure for delivering it clearly.", a: "teacher", q: "closed" },
+      { t: "You offer to be in the room with them when they have the conversation.", a: "rescuer", q: "closed" },
+      { t: "You tell them to just say it plainly, without softening it.", a: "advisor", q: "closed" },
+      { t: "You acknowledge that harmony matters to them and shapes how they show up in hard conversations, then ask: if you knew for certain it wouldn't hurt their feelings, how would you phrase the feedback?", a: "coach", q: "open" }
+    ]
+  },
+  {
+    text: "A VP is talking fast, moving between three different topics without pausing. Something feels like it's underneath all of it, but you're not sure what.",
+    prompt: "How would you respond in that moment?",
+    options: [
+      { t: "You take notes on what they're sharing, jotting down each point as they go, planning to sort it into next steps after.", a: "fixer", q: "closed" },
+      { t: "You wait for a gap and summarize the three topics back to them in order.", a: "teacher", q: "closed" },
+      { t: "You let them keep talking, sensing they need to get it all out first.", a: "rescuer", q: "closed" },
+      { t: "You jump in with which of the three topics you think matters most right now.", a: "advisor", q: "closed" },
+      { t: "You stop them, ask them to pause and take a breath, and once they've settled, ask what feels like the most important thing that needs attention right now.", a: "coach", q: "open" }
+    ]
+  },
+  {
+    text: "A newly promoted leader says, \"Everyone on my team has more experience than me. I don't know if I'm cut out for this.\"",
+    prompt: "How would you respond to them?",
+    options: [
+      { t: "You offer to connect them with someone who's been through this exact transition.", a: "fixer", q: "closed" },
+      { t: "You tell them most new leaders go through exactly this stage, and explain why it happens.", a: "teacher", q: "closed" },
+      { t: "You tell them they're doing better than they think, and not to worry so much.", a: "rescuer", q: "closed" },
+      { t: "You tell them they were promoted for a reason, and to trust that decision.", a: "advisor", q: "closed" },
+      { t: "You acknowledge what you're hearing, that they're wrestling with their identity as a leader and how much experience should factor into their confidence, then ask what assumptions about experience and leadership might be underneath that self-talk.", a: "coach", q: "open" }
+    ]
+  },
+  {
+    text: "A leader says, \"I got some 360 feedback. Honestly, a lot of it feels unfair.\"",
+    prompt: "How would you respond to them?",
+    options: [
+      { t: "You offer to sit down together and help them figure out what to prioritize.", a: "fixer", q: "closed" },
+      { t: "You explain that feedback often reflects perception gaps more than fact.", a: "teacher", q: "closed" },
+      { t: "You tell them that must have been hard to read, and let them vent about it first.", a: "rescuer", q: "closed" },
+      { t: "You tell them feedback is always biased, and talk through which parts you'd personally push back on, based on what you've seen from them.", a: "advisor", q: "closed" },
+      { t: "You ask which piece is hardest to sit with, and what makes that one land the way it does.", a: "coach", q: "open" }
+    ]
+  },
+  {
+    text: "A leader says, \"My team seems disengaged and unmotivated lately. I don't know why.\"",
+    prompt: "How would you respond to them?",
+    options: [
+      { t: "You offer to run an engagement survey to get them some data.", a: "fixer", q: "closed" },
+      { t: "You explain the typical stages teams go through when disengagement sets in.", a: "teacher", q: "closed" },
+      { t: "You tell them that's tough to sit with as a leader, and offer to talk to a few people yourself.", a: "rescuer", q: "closed" },
+      { t: "You tell them, based on what you've seen, it's probably workload, and they should redistribute it.", a: "advisor", q: "closed" },
+      { t: "You ask about the broader context that might be shaping the team's dynamics, and what's changed over the last month or two.", a: "coach", q: "open" }
+    ]
+  },
+  {
+    text: "A leader tells you, \"I've got a strong candidate for a manager role in one of our Europe locations, but they want to work remote. Our CRO isn't aligned to that as a location strategy, and I'm about to lose this candidate over it. How should I position this with him?\"",
+    prompt: "How would you respond to them?",
+    options: [
+      { t: "You offer to draft talking points they can use to position the case to the CRO.", a: "fixer", q: "closed" },
+      { t: "You walk them through how other remote exceptions have been justified and approved before.", a: "teacher", q: "closed" },
+      { t: "You offer to have the conversation with the CRO yourself, since this sounds high-stakes.", a: "rescuer", q: "closed" },
+      { t: "You ask whether this is really about this one candidate, or whether it's actually a bigger question about where the company lands on location strategy long-term.", a: "advisor", q: "closed" },
+      { t: "You ask what their non-negotiables are for this role, before getting into how to position it with the CRO.", a: "coach", q: "open" }
+    ]
+  },
+  {
+    text: "A leader tells you, \"I have to decide on a visa renewal for a contractor, but my VP is out of office and unreachable. I already know he leans against it. I don't want to be the one who says no, and I don't want the employee thinking I kept him in the dark.\"",
+    prompt: "How would you respond to them?",
+    options: [
+      { t: "You offer to draft a message they can send the employee to buy more time until the VP is reachable.", a: "fixer", q: "closed" },
+      { t: "You explain what typically happens procedurally when a VP is unreachable for a decision like this.", a: "teacher", q: "closed" },
+      { t: "You offer to make the call yourself, so they don't have to be the one who says no.", a: "rescuer", q: "closed" },
+      { t: "You ask what they'd weigh here if they were the CEO of this business, not just the person caught in the middle of it.", a: "advisor", q: "closed" },
+      { t: "You ask what's making this decision feel like something they can't make on their own.", a: "coach", q: "open" }
+    ]
+  },
+  {
+    text: "A leader tells you, \"One of my senior leaders is underperforming. I want to shrink their scope so they can focus on a smaller remit. Can you check if that's legally okay?\"",
+    prompt: "How would you respond to them?",
+    options: [
+      { t: "You offer to check with legal and get back to them with what's allowed.", a: "fixer", q: "closed" },
+      { t: "You explain how scope changes are usually handled from a legal and process standpoint.", a: "teacher", q: "closed" },
+      { t: "You offer to help them think through how to message the scope change so it doesn't feel like a demotion.", a: "rescuer", q: "closed" },
+      { t: "You ask whether this is really about the scope, or whether it's a way to avoid the longer performance conversation.", a: "advisor", q: "closed" },
+      { t: "You ask what other options they considered before landing on shrinking the scope, and what ruled each of those out.", a: "coach", q: "open" }
+    ]
+  }
+];
+
+// Fisher-Yates shuffle so option position never signals the archetype
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const archetypes = {
+  fixer: {
+    name: "The Fixer",
+    tagline: "Solves the problem. Rarely sees who else could have.",
+    gift: "Speed and reliability under pressure. You turn chaos into a clear next step faster than almost anyone in the room. Leaders trust you because problems that land on your desk get resolved, not just discussed.",
+    shadow: "You solve before the leader has finished describing the problem. They never get past the story before you're already three steps into the plan. Over time they stop bringing you the early, unformed version of an issue, they bring you the fire, because you taught them that's what gets your attention.",
+    story: "\u201cI'm being useful. I'm removing friction for them.\u201d You tell yourself speed is service. It's serving your own discomfort with sitting inside someone else's unresolved problem.",
+    agreement: "You skip it because you've already decided what the conversation needs. The leader names a problem and your system moves straight to solution mode before either of you has named what they actually want from you, coaching, advice, or execution. You never ask. You assume, and you're usually moving too fast to notice you assumed.",
+    questions: "Level one, data-gathering, closed. \u201cWhat do you need,\u201d \u201cwhen do you need it by,\u201d \u201cwho else is involved.\u201d The questions move information toward a decision, they don't invite reflection.",
+    verbal: "Action language arriving early. \u201cLet me,\u201d \u201cI'll,\u201d \u201chere's what we'll do,\u201d within the first thirty seconds, often before the leader has finished their sentence. The moment you interrupt a description with a solution is the tell.",
+    observer: "The meeting looks efficient. Problems get closed. The leader leaves with an action item. But the leader never fully finished a thought before you supplied the ending for them. The conversation had outputs. It didn't have discovery.",
+    ras: "Task scanning. The moment a leader describes a situation, your attention locks onto what needs doing and starts building the plan before the story is finished. What falls outside the filter: whether the leader was ready to be handed a resolution, or needed to arrive at one themselves.",
+    discern: "You read urgency with real accuracy, you can tell when something is genuinely time-sensitive. You read readiness far less accurately. You assume the leader is ready for a solution the moment they've named a problem, when often they only needed to be heard first.",
+    triggers: "Time pressure, a leader who sounds stressed, anything that carries the scent of escalation. Urgency reads as a cue to act, not a cue to slow down and find out what's actually being asked of you.",
+    growth: "Your capability to move fast and solve well is genuine. The developmental edge is that speed without invitation becomes over-functioning. The skill you're developing toward is naming the fix as a fix before you offer it, and letting the leader choose whether they want it now or want to think out loud first."
+  },
+  teacher: {
+    name: "The Teacher",
+    tagline: "Right framework. Wrong moment.",
+    gift: "Clarity and structure. You give leaders language and frameworks that make sense of what felt murky. People leave able to name something they couldn't name before, and it sticks.",
+    shadow: "You deliver the framework before the leader has finished discovering what they're actually dealing with. The model is accurate. The timing is wrong. They nod, absorb it intellectually, and nothing shifts in how they handle the situation, because the insight was given, not found.",
+    story: "\u201cI'm equipping them.\u201d You tell yourself the framework builds their capability. It's building your own certainty that you added value to the room.",
+    agreement: "You hear the topic and immediately map it to something you already know. Contracting, what does this leader actually want from this conversation, gets skipped, because you've already diagnosed it in your head. The agreement becomes yours instead of theirs.",
+    questions: "Closed questions dressed as open ones. \u201cHave you thought about,\u201d \u201cdo you know the model for.\u201d These sound like invitations, but they're really doorways into your framework.",
+    verbal: "Framing before the question. \u201cThere's a model for this,\u201d \u201cwhat usually happens is,\u201d \u201cthe way I'd think about it is.\u201d The teaching arrives pre-packaged, often before the leader has said enough for you to know if the model even fits.",
+    observer: "The conversation sounds smart. The leader is getting real content, delivered clearly. But they're mostly listening, rarely constructing anything themselves. The session has information. It doesn't have discovery.",
+    ras: "Pattern matching. The moment a leader starts describing a situation, your attention scans for which known model it resembles. What falls outside the filter: whether the leader has finished naming what they're dealing with, or whether the shape you're matching to is even the right one.",
+    discern: "You read content with real accuracy, you can categorize a problem fast. You read timing far less accurately. You teach before the leader has finished discovering what they actually need to know, mistaking recognition for readiness.",
+    triggers: "A leader describing a pattern rather than a single incident. The moment something sounds conceptual, your system reaches for a framework before the story is finished.",
+    growth: "Your ability to make sense of complexity is real and rare. The developmental edge is that teaching without discovery becomes noise, delivered well, but noise. The skill you're building toward is asking what the leader has already tried or already sensed before offering anything new."
+  },
+  rescuer: {
+    name: "The Rescuer",
+    tagline: "Protects the leader from the hard part. Also from the growth.",
+    gift: "Emotional safety. You make it safe for leaders to bring you the unfinished, uncertain version of a problem, before it's polished, before they know what to do with it. That trust is rare.",
+    shadow: "You step in at the exact moment discomfort might have produced the leader's own insight. You soften, reassure, or offer to carry the hard part yourself. They feel cared for. They also learn that visible struggle gets your intervention, so they stop building the capacity to sit inside discomfort alone.",
+    story: "\u201cI'm protecting them.\u201d You tell yourself you're being supportive. You're protecting yourself from watching someone you care about stay uncomfortable.",
+    agreement: "You follow the leader's emotional state instead of pausing to find out what they actually want from you. There's care in the room. There isn't a clear agreement about what they're actually trying to work through.",
+    questions: "Reassurance disguised as a question. \u201cDo you want me to,\u201d \u201cwould it help if I.\u201d These offer relief rather than open space.",
+    verbal: "Softening language, arriving early. \u201cThat sounds hard,\u201d \u201cdon't worry,\u201d \u201cwant me to take that off your plate.\u201d These show up right where the leader might have been about to say something truer, and the comfort interrupts it before it lands.",
+    observer: "The conversation feels warm and safe. The leader opens up. But every time they approached something uncomfortable, you moved to soothe it before they finished sitting in it. The session has connection. It doesn't have movement.",
+    ras: "Distress scanning. The moment a leader shows any strain, a tone shift, hesitation, self-criticism, your attention locks onto their discomfort and starts generating relief. What falls outside the filter: their competence, what they're already capable of carrying.",
+    discern: "You read emotional weather with real accuracy, you can sense distress before it's spoken. You read capability far less accurately. You consistently underestimate what the leader in front of you can carry on their own.",
+    triggers: "A leader who's emotional, apologetic, or self-critical. Your own system activates when theirs does, and the pull to comfort overrides the pull to stay curious.",
+    growth: "Your capacity to make people feel safe is a genuine gift. The developmental edge is that care without challenge becomes protection from growth. The skill you're building toward is letting the discomfort sit one beat longer than feels natural."
+  },
+  advisor: {
+    name: "The Advisor",
+    tagline: "Clear point of view. Leader's ownership, gone.",
+    gift: "Decisiveness and clarity. You give leaders a confident, well-reasoned read they can act on immediately. In the right moment, that clarity is exactly what's needed, and people trust your judgment because it's usually sound.",
+    shadow: "The leader executes your plan instead of building their own. It works, sometimes. When it doesn't, there's no ownership to fall back on, and nothing about the experience transfers to how they'll handle the next problem, because the thinking was never theirs.",
+    story: "\u201cI'm saving them time.\u201d You tell yourself your read is a shortcut to a better outcome. It's a shortcut around the leader's own capacity to arrive at their own answer.",
+    agreement: "You skip contracting because you've already formed a point of view, often before the leader finishes describing the situation. The conversation becomes about landing your read rather than finding out what they actually want, an opinion, a sounding board, or the space to think it through themselves.",
+    questions: "Rhetorical questions, statements with a question mark at the end. \u201cWouldn't it make more sense to,\u201d \u201cdon't you think.\u201d The leader ends up answering your framing, not their own thinking, because the question was never really open.",
+    verbal: "The same rhetorical pattern carries through the whole conversation, not just the questions. Certainty arrives early and stays. \u201cBased on what you're describing,\u201d \u201cI'd say,\u201d phrases that close a topic rather than open it.",
+    observer: "The conversation moves fast and sounds confident. The leader leaves with clear direction. But the direction came entirely from you, they mostly agreed, and the session produced a decision without producing any new thinking from the person who has to live with it.",
+    ras: "Answer scanning. The moment a leader describes a situation, your system is already forming your own point of view and testing it against what you'd do. What falls outside the filter: what the leader hasn't yet let themselves consider.",
+    discern: "You read situations with real clarity and confidence, your instincts are usually sound. You read ownership far less accurately. You assume clarity is the leader's blocker when often it's commitment, and clarity handed to them doesn't build commitment, it just postpones the moment they'd have found their own.",
+    triggers: "A leader asking directly, \u201cwhat would you do?\u201d The instinct to answer is almost automatic, faster than the instinct to turn the question back.",
+    growth: "Your judgment is real, and often good. The developmental edge is that clarity without ownership becomes borrowed conviction, the leader sounds decisive because you were. The skill you're building toward is answering a question with a question once before answering directly."
+  },
+  coach: {
+    name: "The Coach",
+    tagline: "Stays in the question long enough for the leader's own answer to arrive.",
+    gift: "You stay in the question long enough for the leader's own answer to arrive. Whatever they walk away with, they built themselves, so it holds up under pressure in a way advice never does. You've learned to read what a moment actually calls for, task, structure, comfort, or a clear view, and to supply it on purpose rather than by default.",
+    shadow: "You stay in the question past the point it's useful. A leader who's already clear and just needs a decision endorsed gets another open question instead. What reads as discipline can start to feel like withholding, the leader wants you to just say what you think, and you keep handing the thinking back to them because that's the mode you trust.",
+    story: "\u201cI don't want to rob them of their own insight.\u201d You tell yourself restraint is respect. Sometimes it's your own discomfort with being direct, dressed up as method.",
+    agreement: "You actually ask. Before the conversation moves anywhere, you find out what the leader wants from you, a thinking partner, a decision, or simply to be heard, and you name it out loud rather than assuming. Where it can slip: you ask so carefully that the leader answers \u201cI don't know,\u201d and you stay in that uncertainty a beat longer than the moment can afford.",
+    questions: "Level two and level three. Open, exploratory, inviting the leader into their own reflection rather than yours. \u201cWhat have you noticed,\u201d \u201cwhat would it look like if.\u201d Still developing: reading the moments when a closed, fast question would actually serve better than another open one.",
+    verbal: "Pauses that hold. You let a silence sit instead of filling it, and you name what you notice without deciding what it means. \u201cI'm noticing you paused there,\u201d rather than \u201cyou paused because.\u201d",
+    observer: "The leader does most of the talking, and most of the thinking. The conversation moves slower than the other four archetypes, and produces something that tends to stick longer. An observer used to fast, directive HRBP conversations might initially read the pace as passive, until they see what the leader walks away with.",
+    ras: "Signal and readiness together. Your filter stays open longest before locking onto a read, you notice what's unsaid as much as what's said, and you track whether the leader is actually ready to move. What can still slip past: your own instinct to intervene, because it's quiet, and if you don't name it to yourself, it just doesn't happen.",
+    discern: "You read both the leader's readiness and your own instinct to intervene with real accuracy, and most of the time you choose well. Where it gets harder: recognizing the specific moments a leader is plainly asking for your view, not your questions, and mistaking that ask for one more opportunity to reflect back instead.",
+    triggers: "Recognizing that a Fixer, Teacher, Rescuer, or Advisor response is loading in you, and choosing not to act on it yet. The shadow gets triggered by the same thing in reverse, high-stakes moments where staying open feels safer than being direct and possibly wrong out loud.",
+    growth: "This isn't a finished state, it's a practiced one. The edge isn't becoming more coach-like, it's noticing when a moment is actually asking for a Fixer's speed, a Teacher's framework, an Advisor's clarity, or a Rescuer's warmth, and deploying it on purpose instead of defaulting away from it out of habit."
+  }
+};
+
+const archetypeOrder = ["fixer","teacher","rescuer","advisor","coach"];
+let current = 0;
+let answers = [];
+let activeScenarios = scenarios;
+
+function startQuiz(){
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  current = 0;
+  answers = [];
+  activeScenarios = scenarios;
+  renderScenario();
+}
+
+function renderScenario(){
+  const s = activeScenarios[current];
+  document.getElementById('progressLabel').textContent = `Scenario ${current+1} of ${activeScenarios.length}`;
+  document.getElementById('progressFill').style.width = `${((current)/activeScenarios.length)*100 + 6}%`;
+  document.getElementById('scenarioText').textContent = s.text;
+  document.getElementById('scenarioPrompt').textContent = s.prompt || 'How would you respond?';
+  const list = document.getElementById('optionsList');
+  list.innerHTML = '';
+  const shuffled = shuffle(s.options);
+  shuffled.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt.t;
+    btn.onclick = () => selectOption(opt);
+    list.appendChild(btn);
+  });
+}
+
+function selectOption(opt){
+  answers.push(opt);
+  current++;
+  if(current < activeScenarios.length){
+    renderScenario();
+  } else {
+    showResult();
+  }
+}
+
+function showResult(){
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+
+  const counts = { fixer:0, teacher:0, rescuer:0, advisor:0, coach:0 };
+  answers.forEach(a => {
+    counts[a.a]++;
+  });
+
+  let dominant = archetypeOrder.reduce((max,k) => counts[k] > counts[max] ? k : max, archetypeOrder[0]);
+  const arche = archetypes[dominant];
+
+  let secondary = null;
+  archetypeOrder.forEach(k => {
+    if(k === dominant) return;
+    if(counts[k] > 0 && (secondary === null || counts[k] > counts[secondary])){
+      secondary = k;
+    }
+  });
+
+  document.getElementById('resultName').textContent = arche.name;
+  document.getElementById('resultTagline').textContent = arche.tagline;
+  document.getElementById('resultGift').textContent = arche.gift;
+  document.getElementById('resultShadow').textContent = arche.shadow;
+  document.getElementById('resultStory').textContent = arche.story;
+  document.getElementById('resultAgreement').textContent = arche.agreement;
+  document.getElementById('resultQPattern').textContent = arche.questions;
+  document.getElementById('resultVerbal').textContent = arche.verbal;
+  document.getElementById('resultObserver').textContent = arche.observer;
+  document.getElementById('resultRas').textContent = arche.ras;
+  document.getElementById('resultDiscernment').textContent = arche.discern;
+  document.getElementById('resultTriggers').textContent = arche.triggers;
+  document.getElementById('resultGrowth').textContent = arche.growth;
+
+  const secondaryNote = document.getElementById('secondaryNote');
+  if(secondary){
+    secondaryNote.innerHTML = `Your secondary pattern is <strong>${archetypes[secondary].name}</strong>, showing up in ${counts[secondary]} of ${activeScenarios.length} scenarios. Worth noticing what shifts you from your primary default into this one.`;
+  } else {
+    secondaryNote.textContent = '';
+  }
+
+  const maxCount = Math.max(...archetypeOrder.map(k => counts[k]));
+  const rows = document.getElementById('breakdownRows');
+  rows.innerHTML = '';
+  archetypeOrder.forEach(k => {
+    const pct = activeScenarios.length ? (counts[k]/activeScenarios.length)*100 : 0;
+    const row = document.createElement('div');
+    row.className = 'breakdown-row';
+    row.innerHTML = `
+      <div class="label">${archetypes[k].name.replace('The ','')}</div>
+      <div class="bar-track"><div class="bar-fill ${k===dominant?'dominant':''}" style="width:${pct}%"></div></div>
+      <div class="count">${counts[k]}/${activeScenarios.length}</div>
+    `;
+    rows.appendChild(row);
+  });
+}
+
+function restartQuiz(){
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('intro').classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>

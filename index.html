@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HRBP Default Assessment | Power House Coaching</title>
+<title>The HRBP Archetype | Power House Coaching</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
 <style>
@@ -202,6 +203,26 @@
     background:var(--border);
     margin:32px 0;
   }
+  .bias-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:10px;
+  }
+  .bias-item{
+    font-size:16px;
+    line-height:1.65;
+    color:var(--ink);
+  }
+  .bias-item strong{
+    color:var(--dark-teal);
+  }
+  .bias-footer{
+    font-size:13px;
+    color:var(--muted-blue);
+    font-style:italic;
+    margin:6px 0 0;
+  }
   .not-fixed{
     background:var(--light-blue);
     border-radius:8px;
@@ -283,7 +304,7 @@
 
 <div class="stage">
 
-  <div class="mark"><div class="dot"></div><span>POWER HOUSE COACHING - HRBP DEFAULT</span></div>
+  <div class="mark"><div class="dot"></div><span>POWER HOUSE COACHING - HRBP ARCHETYPES</span></div>
 
   <!-- INTRO SCREEN -->
   <div id="intro" class="intro">
@@ -308,7 +329,7 @@
 
   <!-- RESULT SCREEN -->
   <div id="result" class="hidden">
-    <div class="result-eyebrow">YOUR HRBP DEFAULT</div>
+    <div class="result-eyebrow">YOUR HRBP ARCHETYPE</div>
     <div class="result-name" id="resultName"></div>
     <div class="result-tagline" id="resultTagline"></div>
 
@@ -347,12 +368,17 @@
       <p id="resultObserver"></p>
     </div>
     <div class="result-section">
-      <h3>WHAT YOUR RAS FOCUSES ON</h3>
+      <h3>WHAT YOUR RETICULAR ACTIVATING SYSTEM (RAS) FOCUSES ON</h3>
       <p id="resultRas"></p>
     </div>
     <div class="result-section">
       <h3>HOW YOU DISCERN AND PERCEIVE</h3>
       <p id="resultDiscernment"></p>
+    </div>
+    <div class="result-section">
+      <h3>BIASES THAT OFTEN TRAVEL WITH THIS PATTERN</h3>
+      <div id="resultBiases" class="bias-list"></div>
+      <p class="bias-footer">From the Bias Awareness Guide. Worth revisiting once you've read it in full, the AI reflection exercise at the end is where this gets specific to your own coaching.</p>
     </div>
     <div class="result-section">
       <h3>WHAT TRIGGERS YOUR PATTERN</h3>
@@ -537,6 +563,12 @@ const archetypes = {
     observer: "The meeting looks efficient. Problems get closed. The leader leaves with an action item. But the leader never fully finished a thought before you supplied the ending for them. The conversation had outputs. It didn't have discovery.",
     ras: "Task scanning. The moment a leader describes a situation, your attention locks onto what needs doing and starts building the plan before the story is finished. What falls outside the filter: whether the leader was ready to be handed a resolution, or needed to arrive at one themselves.",
     discern: "You read urgency with real accuracy, you can tell when something is genuinely time-sensitive. You read readiness far less accurately. You assume the leader is ready for a solution the moment they've named a problem, when often they only needed to be heard first.",
+    biases: [
+      { name: "Fixer or Rescuer Bias", note: "Reaching to solve a leader's problem instead of asking the question that lets them find their own way through it." },
+      { name: "Urgency Bias", note: "Treating whichever leader escalates loudest or fastest as the real priority, rather than checking what the pattern actually shows. Time pressure is your biggest trigger, so this bias tends to travel with it." },
+      { name: "Recency Bias", note: "Giving the most recent conversation or escalation more weight than the actual pattern over time, since speed rewards whatever's loudest right now." },
+      { name: "Cognitive Load Bias", note: "Your own fatigue or bandwidth shaping what you notice. Speed under pressure leaves the least room to catch this one before it decides for you." }
+    ],
     triggers: "Time pressure, a leader who sounds stressed, anything that carries the scent of escalation. Urgency reads as a cue to act, not a cue to slow down and find out what's actually being asked of you.",
     growth: "Your capability to move fast and solve well is genuine. The developmental edge is that speed without invitation becomes over-functioning. The skill you're developing toward is naming the fix as a fix before you offer it, and letting the leader choose whether they want it now or want to think out loud first."
   },
@@ -552,6 +584,12 @@ const archetypes = {
     observer: "The conversation sounds smart. The leader is getting real content, delivered clearly. But they're mostly listening, rarely constructing anything themselves. The session has information. It doesn't have discovery.",
     ras: "Pattern matching. The moment a leader starts describing a situation, your attention scans for which known model it resembles. What falls outside the filter: whether the leader has finished naming what they're dealing with, or whether the shape you're matching to is even the right one.",
     discern: "You read content with real accuracy, you can categorize a problem fast. You read timing far less accurately. You teach before the leader has finished discovering what they actually need to know, mistaking recognition for readiness.",
+    biases: [
+      { name: "Confirmation Bias", note: "Reading a leader's situation in whatever way confirms the model you already reached for, rather than what the specifics actually show." },
+      { name: "Anchoring Bias", note: "The first thing you heard about the situation disproportionately shaping which framework you pull out, before you've heard the rest of it." },
+      { name: "Status Quo Bias", note: "Relying on the same handful of frameworks across different leaders because they've worked before, rather than because they're right for this one." },
+      { name: "Stereotyping Bias", note: "Assuming which framework a leader needs based on their role, background, or how they present, rather than on what they've actually described." }
+    ],
     triggers: "A leader describing a pattern rather than a single incident. The moment something sounds conceptual, your system reaches for a framework before the story is finished.",
     growth: "Your ability to make sense of complexity is real and rare. The developmental edge is that teaching without discovery becomes noise, delivered well, but noise. The skill you're building toward is asking what the leader has already tried or already sensed before offering anything new."
   },
@@ -567,6 +605,12 @@ const archetypes = {
     observer: "The conversation feels warm and safe. The leader opens up. But every time they approached something uncomfortable, you moved to soothe it before they finished sitting in it. The session has connection. It doesn't have movement.",
     ras: "Distress scanning. The moment a leader shows any strain, a tone shift, hesitation, self-criticism, your attention locks onto their discomfort and starts generating relief. What falls outside the filter: their competence, what they're already capable of carrying.",
     discern: "You read emotional weather with real accuracy, you can sense distress before it's spoken. You read capability far less accurately. You consistently underestimate what the leader in front of you can carry on their own.",
+    biases: [
+      { name: "Leniency Bias", note: "Evaluating a leader more generously than the evidence supports, most often the leader you feel the strongest pull to protect." },
+      { name: "Similarity Bias", note: "Extending more patience and warmth to leaders whose style or history feels familiar to your own, and reading unfamiliar leaders as needing more protection than they do." },
+      { name: "Halo and Horns Bias", note: "Letting one warm interaction color everything you notice about a leader afterward, softening how much you're willing to challenge them next time." },
+      { name: "Presentation Bias", note: "Reading a leader's distress or need for protection from tone, hesitation, or how they come across, rather than the substance of what they actually said." }
+    ],
     triggers: "A leader who's emotional, apologetic, or self-critical. Your own system activates when theirs does, and the pull to comfort overrides the pull to stay curious.",
     growth: "Your capacity to make people feel safe is a genuine gift. The developmental edge is that care without challenge becomes protection from growth. The skill you're building toward is letting the discomfort sit one beat longer than feels natural."
   },
@@ -582,12 +626,18 @@ const archetypes = {
     observer: "The conversation moves fast and sounds confident. The leader leaves with clear direction. But the direction came entirely from you, they mostly agreed, and the session produced a decision without producing any new thinking from the person who has to live with it.",
     ras: "Answer scanning. The moment a leader describes a situation, your system is already forming your own point of view and testing it against what you'd do. What falls outside the filter: what the leader hasn't yet let themselves consider.",
     discern: "You read situations with real clarity and confidence, your instincts are usually sound. You read ownership far less accurately. You assume clarity is the leader's blocker when often it's commitment, and clarity handed to them doesn't build commitment, it just postpones the moment they'd have found their own.",
+    biases: [
+      { name: "Directness Bias", note: "Treating a leader's confident, blunt delivery as competence, and reading hesitation as something to fix rather than something to understand." },
+      { name: "Attribution Bias", note: "Reading a leader's struggle as a reflection of who they are, rather than what they're up against, which speeds you toward a verdict instead of a question." },
+      { name: "Stringency Bias", note: "Assessing a leader more harshly than the evidence supports, often a leader you've already formed a fixed read on." },
+      { name: "Seniority Deference Bias", note: "Accepting a senior leader's framing of a problem without question, then answering confidently inside that frame rather than testing whether the frame itself is right." }
+    ],
     triggers: "A leader asking directly, \u201cwhat would you do?\u201d The instinct to answer is almost automatic, faster than the instinct to turn the question back.",
     growth: "Your judgment is real, and often good. The developmental edge is that clarity without ownership becomes borrowed conviction, the leader sounds decisive because you were. The skill you're building toward is answering a question with a question once before answering directly."
   },
   coach: {
     name: "The Coach",
-    tagline: "Stays in the question long enough for the leader's own answer to arrive.",
+    tagline: "Stays in the question long enough for the leader to have their own insight and accept their own accountability.",
     gift: "You stay in the question long enough for the leader's own answer to arrive. Whatever they walk away with, they built themselves, so it holds up under pressure in a way advice never does. You've learned to read what a moment actually calls for, task, structure, comfort, or a clear view, and to supply it on purpose rather than by default.",
     shadow: "You stay in the question past the point it's useful. A leader who's already clear and just needs a decision endorsed gets another open question instead. What reads as discipline can start to feel like withholding, the leader wants you to just say what you think, and you keep handing the thinking back to them because that's the mode you trust.",
     story: "\u201cI don't want to rob them of their own insight.\u201d You tell yourself restraint is respect. Sometimes it's your own discomfort with being direct, dressed up as method.",
@@ -597,6 +647,12 @@ const archetypes = {
     observer: "The leader does most of the talking, and most of the thinking. The conversation moves slower than the other four archetypes, and produces something that tends to stick longer. An observer used to fast, directive HRBP conversations might initially read the pace as passive, until they see what the leader walks away with.",
     ras: "Signal and readiness together. Your filter stays open longest before locking onto a read, you notice what's unsaid as much as what's said, and you track whether the leader is actually ready to move. What can still slip past: your own instinct to intervene, because it's quiet, and if you don't name it to yourself, it just doesn't happen.",
     discern: "You read both the leader's readiness and your own instinct to intervene with real accuracy, and most of the time you choose well. Where it gets harder: recognizing the specific moments a leader is plainly asking for your view, not your questions, and mistaking that ask for one more opportunity to reflect back instead.",
+    biases: [
+      { name: "Relationship Credit Bias", note: "Giving leaders you trust more room to sit in open questions than you'd extend to someone newer, whether or not that's actually what the moment calls for." },
+      { name: "Contrast Bias", note: "Reading how much space to give this leader against whoever you just coached, rather than against what this specific moment actually needs." },
+      { name: "Pace and Energy Bias", note: "Warming to leaders whose speed and expressiveness match your own, and reading a mismatch as friction rather than simple difference." },
+      { name: "Management Bias (Proxy Bias)", note: "Because so much of what you hear comes from one leader's own account of their team, over enough conversations you can start treating their view of other people as the full picture, rather than one side of it." }
+    ],
     triggers: "Recognizing that a Fixer, Teacher, Rescuer, or Advisor response is loading in you, and choosing not to act on it yet. The shadow gets triggered by the same thing in reverse, high-stakes moments where staying open feels safer than being direct and possibly wrong out loud.",
     growth: "This isn't a finished state, it's a practiced one. The edge isn't becoming more coach-like, it's noticing when a moment is actually asking for a Fixer's speed, a Teacher's framework, an Advisor's clarity, or a Rescuer's warmth, and deploying it on purpose instead of defaulting away from it out of habit."
   }
@@ -677,6 +733,15 @@ function showResult(){
   document.getElementById('resultDiscernment').textContent = arche.discern;
   document.getElementById('resultTriggers').textContent = arche.triggers;
   document.getElementById('resultGrowth').textContent = arche.growth;
+
+  const biasList = document.getElementById('resultBiases');
+  biasList.innerHTML = '';
+  arche.biases.forEach(b => {
+    const item = document.createElement('div');
+    item.className = 'bias-item';
+    item.innerHTML = `<strong>${b.name}.</strong> ${b.note}`;
+    biasList.appendChild(item);
+  });
 
   const secondaryNote = document.getElementById('secondaryNote');
   if(secondary){

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -439,7 +438,7 @@
   <!-- RESULT SCREEN -->
   <div id="result" class="hidden">
     <div class="result-greeting" id="resultGreeting"></div>
-    <div class="result-eyebrow">YOUR HRBP ARCHETYPE</div>
+    <div class="result-eyebrow">YOUR HRBP ARCHETYPE RESULTS ARE HERE</div>
     <div class="result-name" id="resultName"></div>
     <div class="result-tagline" id="resultTagline"></div>
 
@@ -850,12 +849,69 @@ function checkOptinValid(){
   document.getElementById('optinBtn').disabled = !(name.length > 0 && emailLooksValid);
 }
 
-function submitOptin(){
+/* ---- MAKE.COM WEBHOOK ---- */
+const WEBHOOK_URL = 'https://hook.eu2.make.com/sgx622wfiokchirnif7m2vb3n2ztkfbj';
+
+async function submitOptin(){
   leadName = document.getElementById('optinName').value.trim();
   leadEmail = document.getElementById('optinEmail').value.trim();
   document.getElementById('optin').classList.add('hidden');
   showResult();
-  emailResults();
+  // Fire webhook after result is shown — non-blocking, UX unaffected
+  fireWebhook().catch(function(){});
+}
+
+async function fireWebhook(){
+  if(!currentArche) return;
+
+  const counts = { fixer:0, teacher:0, rescuer:0, advisor:0, coach:0 };
+  selectedAnswers.forEach(function(a){ if(a) counts[a.a]++; });
+
+  let secondary = null;
+  archetypeOrder.forEach(function(k){
+    if(k === currentDominant) return;
+    if(counts[k] > 0 && (secondary === null || counts[k] > counts[secondary])) secondary = k;
+  });
+
+  await fetch(WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name:  leadName,
+      email: leadEmail,
+      archetype_key:     currentDominant,
+      archetype_name:    currentArche.name,
+      archetype_tagline: currentArche.tagline,
+      archetype_gift:        currentArche.gift,
+      archetype_shadow:      currentArche.shadow,
+      archetype_story:       currentArche.story,
+      archetype_agreement:   currentArche.agreement,
+      archetype_questions:   currentArche.questions,
+      archetype_verbal:      currentArche.verbal,
+      archetype_observer:    currentArche.observer,
+      archetype_ras:         currentArche.ras,
+      archetype_discern:     currentArche.discern,
+      archetype_triggers:    currentArche.triggers,
+      archetype_growth:      currentArche.growth,
+      bias_1_name: currentArche.biases[0] ? currentArche.biases[0].name : '',
+      bias_1_note: currentArche.biases[0] ? currentArche.biases[0].note : '',
+      bias_2_name: currentArche.biases[1] ? currentArche.biases[1].name : '',
+      bias_2_note: currentArche.biases[1] ? currentArche.biases[1].note : '',
+      bias_3_name: currentArche.biases[2] ? currentArche.biases[2].name : '',
+      bias_3_note: currentArche.biases[2] ? currentArche.biases[2].note : '',
+      bias_4_name: currentArche.biases[3] ? currentArche.biases[3].name : '',
+      bias_4_note: currentArche.biases[3] ? currentArche.biases[3].note : '',
+      score_fixer:   counts.fixer,
+      score_teacher: counts.teacher,
+      score_rescuer: counts.rescuer,
+      score_advisor: counts.advisor,
+      score_coach:   counts.coach,
+      score_total:   activeScenarios.length,
+      secondary_archetype_key:  secondary || '',
+      secondary_archetype_name: secondary ? archetypes[secondary].name : '',
+      secondary_score:          secondary ? counts[secondary] : 0
+    })
+  });
 }
 
 let currentDominant = null;
@@ -929,32 +985,6 @@ function showResult(){
     `;
     rows.appendChild(row);
   });
-}
-
-function emailResults(){
-  if(!currentArche) return;
-  const to = leadEmail || '';
-  const subject = `Your HRBP Archetype: ${currentArche.name}`;
-  const bodyLines = [
-    leadName ? `Hi ${leadName},` : 'Hi,',
-    '',
-    `Your HRBP Archetype: ${currentArche.name}`,
-    currentArche.tagline,
-    '',
-    'YOUR GIFT (WHEN IT\'S A CHOICE)',
-    currentArche.gift,
-    '',
-    'YOUR SHADOW (WHEN IT\'S YOUR DEFAULT)',
-    currentArche.shadow,
-    '',
-    'YOUR GROWTH STRETCH',
-    currentArche.growth,
-    '',
-    'This is a summary. Revisit the full report on screen for the complete breakdown, including how you ask questions, what your RAS focuses on, and the biases that travel with this pattern.'
-  ];
-  const body = bodyLines.join('\n');
-  const mailto = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  window.location.href = mailto;
 }
 
 function restartQuiz(){

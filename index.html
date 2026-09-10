@@ -71,6 +71,16 @@
     color:var(--dark-teal);
     font-weight:500;
   }
+  .intro-instruction{
+    background:var(--light-blue);
+    border-radius:8px;
+    padding:16px 18px;
+    font-size:14.5px !important;
+    color:var(--dark-teal) !important;
+    line-height:1.6;
+    margin:0 0 32px !important;
+    max-width:none !important;
+  }
   .btn{
     appearance:none;
     border:none;
@@ -155,6 +165,23 @@
   }
   .option:active{transform:scale(0.995);}
   .option:focus-visible{outline:2px solid var(--dark-teal);outline-offset:2px;}
+  .option.selected{
+    border-color:var(--primary);
+    background:var(--light-blue);
+    box-shadow:inset 0 0 0 1px var(--primary);
+  }
+  .quiz-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:28px;
+  }
+  .btn:disabled{
+    background:var(--border);
+    color:var(--muted-blue);
+    cursor:not-allowed;
+  }
+  .btn:disabled:hover{background:var(--border);}
   .option .quote-mark{color:var(--muted-blue);}
 
   /* ---- RESULT ---- */
@@ -295,6 +322,71 @@
     flex-wrap:wrap;
   }
   .hidden{display:none;}
+
+  /* ---- OPT-IN ---- */
+  .optin{
+    text-align:center;
+    padding-top:40px;
+  }
+  .optin-icon{
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:var(--sage);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 28px;
+  }
+  .optin h1{
+    font-family:'Source Serif 4',serif;
+    font-size:clamp(26px,4.5vw,32px);
+    font-weight:600;
+    color:var(--dark-teal);
+    margin:0 0 14px;
+  }
+  .optin p{
+    font-size:16px;
+    line-height:1.6;
+    color:var(--muted-blue);
+    max-width:38ch;
+    margin:0 auto 28px;
+  }
+  .optin-input{
+    display:block;
+    width:100%;
+    max-width:360px;
+    margin:0 auto 12px;
+    padding:14px 16px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    background:var(--white);
+  }
+  .optin-input::placeholder{color:var(--muted-blue);}
+  .optin-input:focus{
+    outline:none;
+    border-color:var(--primary);
+  }
+  .optin-btn{
+    width:100%;
+    max-width:360px;
+    margin:8px auto 0;
+    display:block;
+  }
+  .optin-footer{
+    font-size:13px !important;
+    color:var(--muted-blue) !important;
+    max-width:none !important;
+    margin:16px auto 0 !important;
+  }
+  .result-greeting{
+    font-size:15px;
+    color:var(--muted-blue);
+    margin-bottom:6px;
+  }
   @media (max-width:480px){
     .breakdown-row{grid-template-columns:76px 1fr 40px;}
   }
@@ -310,7 +402,8 @@
   <div id="intro" class="intro">
     <h1>Your Coaching Has a Pattern.</h1>
     <p>Every HRBP has a default stance. It's the place they turn to when the client's readiness is either ahead of them, or behind them. Yours is running right now, whether you've named it or not.</p>
-    <p>Nine scenarios. Five minutes. One pattern you'll recognize the second you see it.</p>
+    <p>Twelve scenarios. Five minutes. One pattern you'll recognize the second you see it.</p>
+    <p class="intro-instruction">For each one, choose what you'd actually be most likely to say or do, not what you think the ideal answer is. There's no right or wrong answer here, the value is in seeing your real pattern, not a polished one.</p>
     <button class="btn" onclick="startQuiz()">Start the assessment</button>
   </div>
 
@@ -325,10 +418,27 @@
     <div class="scenario" id="scenarioText"></div>
     <div class="scenario-prompt" id="scenarioPrompt"></div>
     <div class="options" id="optionsList"></div>
+    <div class="quiz-nav">
+      <button class="btn btn-ghost" id="backBtn" onclick="goBack()">Back</button>
+      <button class="btn" id="nextBtn" onclick="goNext()" disabled>Next</button>
+    </div>
+  </div>
+
+  <!-- OPT-IN SCREEN -->
+  <div id="optin" class="hidden optin">
+    <div class="optin-icon">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h1>Your archetype is ready.</h1>
+    <p>Enter your name and email to see your full HRBP Archetype report.</p>
+    <input type="text" id="optinName" class="optin-input" placeholder="First name" oninput="checkOptinValid()">
+    <input type="email" id="optinEmail" class="optin-input" placeholder="Email address" oninput="checkOptinValid()">
+    <button class="btn optin-btn" id="optinBtn" onclick="submitOptin()" disabled>See My Archetype</button>
   </div>
 
   <!-- RESULT SCREEN -->
   <div id="result" class="hidden">
+    <div class="result-greeting" id="resultGreeting"></div>
     <div class="result-eyebrow">YOUR HRBP ARCHETYPE</div>
     <div class="result-name" id="resultName"></div>
     <div class="result-tagline" id="resultTagline"></div>
@@ -660,15 +770,17 @@ const archetypes = {
 
 const archetypeOrder = ["fixer","teacher","rescuer","advisor","coach"];
 let current = 0;
-let answers = [];
+let selectedAnswers = [];
+let shuffledOptions = [];
 let activeScenarios = scenarios;
 
 function startQuiz(){
   document.getElementById('intro').classList.add('hidden');
   document.getElementById('quiz').classList.remove('hidden');
   current = 0;
-  answers = [];
   activeScenarios = scenarios;
+  shuffledOptions = activeScenarios.map(s => shuffle(s.options));
+  selectedAnswers = new Array(activeScenarios.length).fill(null);
   renderScenario();
 }
 
@@ -678,39 +790,92 @@ function renderScenario(){
   document.getElementById('progressFill').style.width = `${((current)/activeScenarios.length)*100 + 6}%`;
   document.getElementById('scenarioText').textContent = s.text;
   document.getElementById('scenarioPrompt').textContent = s.prompt || 'How would you respond?';
+
   const list = document.getElementById('optionsList');
   list.innerHTML = '';
-  const shuffled = shuffle(s.options);
-  shuffled.forEach(opt => {
+  const opts = shuffledOptions[current];
+  const selected = selectedAnswers[current];
+  opts.forEach(opt => {
     const btn = document.createElement('button');
-    btn.className = 'option';
+    btn.className = 'option' + (selected === opt ? ' selected' : '');
     btn.textContent = opt.t;
     btn.onclick = () => selectOption(opt);
     list.appendChild(btn);
   });
+
+  const backBtn = document.getElementById('backBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  backBtn.style.visibility = current === 0 ? 'hidden' : 'visible';
+  nextBtn.disabled = !selectedAnswers[current];
+  nextBtn.textContent = current === activeScenarios.length - 1 ? 'See Results' : 'Next';
 }
 
 function selectOption(opt){
-  answers.push(opt);
-  current++;
-  if(current < activeScenarios.length){
+  selectedAnswers[current] = opt;
+  renderScenario();
+}
+
+function goNext(){
+  if(!selectedAnswers[current]) return;
+  if(current < activeScenarios.length - 1){
+    current++;
     renderScenario();
   } else {
-    showResult();
+    showOptin();
   }
 }
 
-function showResult(){
+function goBack(){
+  if(current > 0){
+    current--;
+    renderScenario();
+  }
+}
+
+let leadName = '';
+let leadEmail = '';
+
+function showOptin(){
   document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('optin').classList.remove('hidden');
+  document.getElementById('optinName').value = '';
+  document.getElementById('optinEmail').value = '';
+  document.getElementById('optinBtn').disabled = true;
+}
+
+function checkOptinValid(){
+  const name = document.getElementById('optinName').value.trim();
+  const email = document.getElementById('optinEmail').value.trim();
+  const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  document.getElementById('optinBtn').disabled = !(name.length > 0 && emailLooksValid);
+}
+
+function submitOptin(){
+  leadName = document.getElementById('optinName').value.trim();
+  leadEmail = document.getElementById('optinEmail').value.trim();
+  document.getElementById('optin').classList.add('hidden');
+  showResult();
+  emailResults();
+}
+
+let currentDominant = null;
+let currentArche = null;
+
+function showResult(){
   document.getElementById('result').classList.remove('hidden');
 
+  const greeting = document.getElementById('resultGreeting');
+  greeting.textContent = leadName ? `Hi ${leadName},` : '';
+
   const counts = { fixer:0, teacher:0, rescuer:0, advisor:0, coach:0 };
-  answers.forEach(a => {
-    counts[a.a]++;
+  selectedAnswers.forEach(a => {
+    if(a) counts[a.a]++;
   });
 
   let dominant = archetypeOrder.reduce((max,k) => counts[k] > counts[max] ? k : max, archetypeOrder[0]);
   const arche = archetypes[dominant];
+  currentDominant = dominant;
+  currentArche = arche;
 
   let secondary = null;
   archetypeOrder.forEach(k => {
@@ -764,6 +929,32 @@ function showResult(){
     `;
     rows.appendChild(row);
   });
+}
+
+function emailResults(){
+  if(!currentArche) return;
+  const to = leadEmail || '';
+  const subject = `Your HRBP Archetype: ${currentArche.name}`;
+  const bodyLines = [
+    leadName ? `Hi ${leadName},` : 'Hi,',
+    '',
+    `Your HRBP Archetype: ${currentArche.name}`,
+    currentArche.tagline,
+    '',
+    'YOUR GIFT (WHEN IT\'S A CHOICE)',
+    currentArche.gift,
+    '',
+    'YOUR SHADOW (WHEN IT\'S YOUR DEFAULT)',
+    currentArche.shadow,
+    '',
+    'YOUR GROWTH STRETCH',
+    currentArche.growth,
+    '',
+    'This is a summary. Revisit the full report on screen for the complete breakdown, including how you ask questions, what your RAS focuses on, and the biases that travel with this pattern.'
+  ];
+  const body = bodyLines.join('\n');
+  const mailto = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
 }
 
 function restartQuiz(){

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -322,70 +323,6 @@
   }
   .hidden{display:none;}
 
-  /* ---- OPT-IN ---- */
-  .optin{
-    text-align:center;
-    padding-top:40px;
-  }
-  .optin-icon{
-    width:64px;
-    height:64px;
-    border-radius:50%;
-    background:var(--sage);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin:0 auto 28px;
-  }
-  .optin h1{
-    font-family:'Source Serif 4',serif;
-    font-size:clamp(26px,4.5vw,32px);
-    font-weight:600;
-    color:var(--dark-teal);
-    margin:0 0 14px;
-  }
-  .optin p{
-    font-size:16px;
-    line-height:1.6;
-    color:var(--muted-blue);
-    max-width:38ch;
-    margin:0 auto 28px;
-  }
-  .optin-input{
-    display:block;
-    width:100%;
-    max-width:360px;
-    margin:0 auto 12px;
-    padding:14px 16px;
-    border:1px solid var(--border);
-    border-radius:6px;
-    font-family:'Inter',sans-serif;
-    font-size:15px;
-    color:var(--ink);
-    background:var(--white);
-  }
-  .optin-input::placeholder{color:var(--muted-blue);}
-  .optin-input:focus{
-    outline:none;
-    border-color:var(--primary);
-  }
-  .optin-btn{
-    width:100%;
-    max-width:360px;
-    margin:8px auto 0;
-    display:block;
-  }
-  .optin-footer{
-    font-size:13px !important;
-    color:var(--muted-blue) !important;
-    max-width:none !important;
-    margin:16px auto 0 !important;
-  }
-  .result-greeting{
-    font-size:15px;
-    color:var(--muted-blue);
-    margin-bottom:6px;
-  }
   @media (max-width:480px){
     .breakdown-row{grid-template-columns:76px 1fr 40px;}
   }
@@ -423,22 +360,9 @@
     </div>
   </div>
 
-  <!-- OPT-IN SCREEN -->
-  <div id="optin" class="hidden optin">
-    <div class="optin-icon">
-      <svg viewBox="0 0 24 24" width="28" height="28" fill="none"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <h1>Your archetype is ready.</h1>
-    <p>Enter your name and email to see your full HRBP Archetype report.</p>
-    <input type="text" id="optinName" class="optin-input" placeholder="First name" oninput="checkOptinValid()">
-    <input type="email" id="optinEmail" class="optin-input" placeholder="Email address" oninput="checkOptinValid()">
-    <button class="btn optin-btn" id="optinBtn" onclick="submitOptin()" disabled>See My Archetype</button>
-  </div>
-
   <!-- RESULT SCREEN -->
   <div id="result" class="hidden">
-    <div class="result-greeting" id="resultGreeting"></div>
-    <div class="result-eyebrow">YOUR HRBP ARCHETYPE RESULTS ARE HERE</div>
+    <div class="result-eyebrow">YOUR HRBP ARCHETYPE</div>
     <div class="result-name" id="resultName"></div>
     <div class="result-tagline" id="resultTagline"></div>
 
@@ -820,7 +744,8 @@ function goNext(){
     current++;
     renderScenario();
   } else {
-    showOptin();
+    document.getElementById('quiz').classList.add('hidden');
+    showResult();
   }
 }
 
@@ -831,97 +756,11 @@ function goBack(){
   }
 }
 
-let leadName = '';
-let leadEmail = '';
-
-function showOptin(){
-  document.getElementById('quiz').classList.add('hidden');
-  document.getElementById('optin').classList.remove('hidden');
-  document.getElementById('optinName').value = '';
-  document.getElementById('optinEmail').value = '';
-  document.getElementById('optinBtn').disabled = true;
-}
-
-function checkOptinValid(){
-  const name = document.getElementById('optinName').value.trim();
-  const email = document.getElementById('optinEmail').value.trim();
-  const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  document.getElementById('optinBtn').disabled = !(name.length > 0 && emailLooksValid);
-}
-
-/* ---- MAKE.COM WEBHOOK ---- */
-const WEBHOOK_URL = 'https://hook.eu2.make.com/sgx622wfiokchirnif7m2vb3n2ztkfbj';
-
-async function submitOptin(){
-  leadName = document.getElementById('optinName').value.trim();
-  leadEmail = document.getElementById('optinEmail').value.trim();
-  document.getElementById('optin').classList.add('hidden');
-  showResult();
-  // Fire webhook after result is shown — non-blocking, UX unaffected
-  fireWebhook().catch(function(){});
-}
-
-async function fireWebhook(){
-  if(!currentArche) return;
-
-  const counts = { fixer:0, teacher:0, rescuer:0, advisor:0, coach:0 };
-  selectedAnswers.forEach(function(a){ if(a) counts[a.a]++; });
-
-  let secondary = null;
-  archetypeOrder.forEach(function(k){
-    if(k === currentDominant) return;
-    if(counts[k] > 0 && (secondary === null || counts[k] > counts[secondary])) secondary = k;
-  });
-
-  await fetch(WEBHOOK_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name:  leadName,
-      email: leadEmail,
-      archetype_key:     currentDominant,
-      archetype_name:    currentArche.name,
-      archetype_tagline: currentArche.tagline,
-      archetype_gift:        currentArche.gift,
-      archetype_shadow:      currentArche.shadow,
-      archetype_story:       currentArche.story,
-      archetype_agreement:   currentArche.agreement,
-      archetype_questions:   currentArche.questions,
-      archetype_verbal:      currentArche.verbal,
-      archetype_observer:    currentArche.observer,
-      archetype_ras:         currentArche.ras,
-      archetype_discern:     currentArche.discern,
-      archetype_triggers:    currentArche.triggers,
-      archetype_growth:      currentArche.growth,
-      bias_1_name: currentArche.biases[0] ? currentArche.biases[0].name : '',
-      bias_1_note: currentArche.biases[0] ? currentArche.biases[0].note : '',
-      bias_2_name: currentArche.biases[1] ? currentArche.biases[1].name : '',
-      bias_2_note: currentArche.biases[1] ? currentArche.biases[1].note : '',
-      bias_3_name: currentArche.biases[2] ? currentArche.biases[2].name : '',
-      bias_3_note: currentArche.biases[2] ? currentArche.biases[2].note : '',
-      bias_4_name: currentArche.biases[3] ? currentArche.biases[3].name : '',
-      bias_4_note: currentArche.biases[3] ? currentArche.biases[3].note : '',
-      score_fixer:   counts.fixer,
-      score_teacher: counts.teacher,
-      score_rescuer: counts.rescuer,
-      score_advisor: counts.advisor,
-      score_coach:   counts.coach,
-      score_total:   activeScenarios.length,
-      secondary_archetype_key:  secondary || '',
-      secondary_archetype_name: secondary ? archetypes[secondary].name : '',
-      secondary_score:          secondary ? counts[secondary] : 0
-    })
-  });
-}
-
 let currentDominant = null;
 let currentArche = null;
 
 function showResult(){
   document.getElementById('result').classList.remove('hidden');
-
-  const greeting = document.getElementById('resultGreeting');
-  greeting.textContent = leadName ? `Hi ${leadName},` : '';
 
   const counts = { fixer:0, teacher:0, rescuer:0, advisor:0, coach:0 };
   selectedAnswers.forEach(a => {
